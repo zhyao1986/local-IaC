@@ -1,0 +1,20 @@
+#Vagrant API/syntax 版本.不要修改它除非你知道你自己在做什么.
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = true
+    vb.memory = 1024
+    vb.cpus = 1
+  end
+  
+  config.vm.define "test" do |test01|
+    test01.vm.hostname = "test01"
+    test01.vm.box = "Centos7"
+    #test01.vm.network :public_network
+    test01.vm.network :private_network, ip: "192.168.10.10"
+    #test01.vm.network "forwarded_port", guest: "80", host: "8080"
+    #Provision the webserver with Ansible
+    test01.vm.provision :shell, path: "initial.sh"
+   end
+end
