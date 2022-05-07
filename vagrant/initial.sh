@@ -1,4 +1,13 @@
 #!/bin/bash
+
+DOCKER_REPO_URL="https://download.docker.com/linux/centos/docker-ce.repo"
+
+PYTHON_ROOT_URL="https://www.python.org/ftp/python"
+PYTHON_VERSION="3.10.4"
+PYTHON_PKG_NAME="Python-$PYTHON_VERSION"
+PYTHON_PKG_FILE="$PYTHON_PKG_NAME.tgz"
+PYTHON_PKG_URL="$PYTHON_ROOT_URL/$PYTHON_VERSION/$PYTHON_PKG_FILE"
+
 system-update () {
     sudo yum update -y
     sudo yum install wget -y
@@ -14,7 +23,7 @@ install-docker () {
                 docker-logrotate \
                 docker-engine
     sudo yum install -y yum-utils
-    sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    sudo yum-config-manager --add-repo "$DOCKER_REPO_URL"
     sudo yum install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
     sudo systemctl start docker
     sudo systemctl enable docker
@@ -23,9 +32,9 @@ install-docker () {
 install-python () {
     sudo yum install gcc openssl-devel bzip2-devel libffi-devel -y
     cd ~
-    wget https://www.python.org/ftp/python/3.10.4/Python-3.10.4.tgz
-    tar -xzf Python-3.10.4.tgz
-    cd Python-3.10.4/
+    wget "$PYTHON_PKG_URL"
+    tar -xzf "$PYTHON_PKG_FILE"
+    cd "$PYTHON_PKG_NAME"/
     sudo ./configure --with-ssl
     sudo make && sudo make install
     sudo ln -s /usr/local/python3 /usr/bin/python3
